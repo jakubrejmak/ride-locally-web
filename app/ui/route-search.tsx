@@ -1,72 +1,137 @@
 "use client";
 
-import LocationPicker from "@/app/ui/location-picker";
-import useUserLocation from "@/app/hooks/use-user-location";
-import useStopsCloseby from "@/app/hooks/use-stops-closeby";
-import useStopsPopular from "@/app/hooks/use-stops-popular";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxLabel,
+  ComboboxList,
+} from "@/components/ui/combobox";
 
-export default function RouteSearch() {
-  const { location, error: locationError } = useUserLocation();
+import { useState } from "react";
+import { LocationOption } from "@/app/lib/locations";
+import { searchTrips } from "@/app/actions/actions";
+import { useUserLocation, useLocations } from "@/app/hooks/use-locations";
+import {
+  getStopsCloseby,
+  getStopsPopular,
+  getLocationsCloseby,
+  getLocationsPopular,
+} from "@/app/data/queries";
 
-  const {
-    stops: stopsCloseby,
-    loading: stopsClosebyLoading,
-    error: stopsClosebyError,
-  } = useStopsCloseby(location);
+export default function TripSearch() {
+  const [origin, setOrigin] = useState<LocationOption | null>(null);
+  const [destination, setDestination] = useState<LocationOption | null>(null);
 
-  const {
-    stops: stopsPopular,
-    loading: stopsPopularLoading,
-    error: stopsPopularError,
-  } = useStopsPopular(location);
+  const { location: userLoc } = useUserLocation();
 
-  const isLocationLoading = !location && !locationError;
+  const { data: stopsCloseby } = useLocations(userLoc, getStopsCloseby);
+  const { data: stopsPopular } = useLocations(userLoc, getStopsPopular);
+  const { data: locationsCloseby } = useLocations(userLoc, getLocationsCloseby);
+  const { data: locationsPopular } = useLocations(userLoc, getLocationsPopular);
 
-  const stopsClosebyList = stopsCloseby?.map((stop) => ({
-    id: stop.id,
-    label: stop.name,
-  }));
+  const originItems: LocationOption[] = [
+    ...(stopsCloseby ?? []).map((s) => ({
+      kind: "stop" as const,
+      id: `stop:${s.id}`,
+      label: s.name,
+    })),
+    ...(locationsCloseby ?? []).map((a) => ({
+      kind: "address" as const,
+      id: `address:${a.id}`,
+      label: a.display_name,
+    })),
+  ];
 
-  const stopsPopularList = stopsPopular?.map((stop) => ({
-    id: stop.id,
-    label: stop.name,
-  }));
+  const destinationItems: LocationOption[] = [
+    ...(stopsPopular ?? []).map((s) => ({
+      kind: "stop" as const,
+      id: `stop:${s.id}`,
+      label: s.name,
+    })),
+    ...(locationsPopular ?? []).map((a) => ({
+      kind: "address" as const,
+      id: `address:${a.id}`,
+      label: a.display_name,
+    })),
+  ];
 
   return (
-    <form className='mt-8 flex flex-col gap-6'>
-      <fieldset className='flex flex-col gap-4'>
-        <legend className='sr-only'>Route selection</legend>
-
-        <LocationPicker
-          id='origin'
-          label='From'
-          placeholder='Departure location'
-          locations={{
-            locationList: stopsClosebyList ?? [],
-            loading: isLocationLoading || stopsClosebyLoading,
-            error: locationError ?? stopsClosebyError,
-          }}
-        />
-
-        <LocationPicker
-          id='destination'
-          label='To'
-          placeholder='Arrival location'
-          locations={{
-            locationList: stopsPopularList ?? [],
-            loading: isLocationLoading || stopsPopularLoading,
-            error: locationError ?? stopsPopularError,
-          }}
-        />
-      </fieldset>
-
-      <button
-        type='submit'
-        disabled
-        className='rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200'
+    <form action={searchTrips}>
+      <Combobox
+        value={origin}
+        onValueChange={setOrigin}
+        items={originItems}
+        itemToStringValue={(item: LocationOption) => item.label}
       >
-        Search
-      </button>
+        <ComboboxInput placeholder="Select origin" />
+        <ComboboxContent>
+          <ComboboxEmpty>No items found.</ComboboxEmpty>
+          <ComboboxList>
+            <ComboboxGroup>
+              <ComboboxLabel>Stops</ComboboxLabel>
+              {(stopsCloseby ?? []).map((s) => (
+                <ComboboxItem
+                  key={`stop:${s.id}`}
+                  value={{ kind: "stop", id: `stop:${s.id}`, label: s.name }}
+                >
+                  {s.name}
+                </ComboboxItem>
+              ))}
+            </ComboboxGroup>
+            <ComboboxGroup>
+              <ComboboxLabel>Addresses</ComboboxLabel>
+              {(locationsCloseby ?? []).map((a) => (
+                <ComboboxItem
+                  key={`address:${a.id}`}
+                  value={{ kind: "address", id: `address:${a.id}`, label: a.display_name }}
+                >
+                  {a.display_name}
+                </ComboboxItem>
+              ))}
+            </ComboboxGroup>
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>
+
+      <Combobox
+        value={destination}
+        onValueChange={setDestination}
+        items={destinationItems}
+        itemToStringValue={(item: LocationOption) => item.label}
+      >
+        <ComboboxInput placeholder="Select destination" />
+        <ComboboxContent>
+          <ComboboxEmpty>No items found.</ComboboxEmpty>
+          <ComboboxList>
+            <ComboboxGroup>
+              <ComboboxLabel>Stops</ComboboxLabel>
+              {(stopsPopular ?? []).map((s) => (
+                <ComboboxItem
+                  key={`stop:${s.id}`}
+                  value={{ kind: "stop", id: `stop:${s.id}`, label: s.name }}
+                >
+                  {s.name}
+                </ComboboxItem>
+              ))}
+            </ComboboxGroup>
+            <ComboboxGroup>
+              <ComboboxLabel>Addresses</ComboboxLabel>
+              {(locationsPopular ?? []).map((a) => (
+                <ComboboxItem
+                  key={`address:${a.id}`}
+                  value={{ kind: "address", id: `address:${a.id}`, label: a.display_name }}
+                >
+                  {a.display_name}
+                </ComboboxItem>
+              ))}
+            </ComboboxGroup>
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>
     </form>
   );
 }
