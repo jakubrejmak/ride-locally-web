@@ -1,4 +1,4 @@
-import RouteSearch from "@/app/ui/trip-search";
+import TripSearch from "@/app/ui/trip-search";
 
 export default function Home() {
   return (
@@ -10,7 +10,7 @@ export default function Home() {
         <p className='mt-2 text-zinc-600 dark:text-zinc-400'>
           Search local transit schedules between two locations.
         </p>
-        <RouteSearch />
+        <TripSearch />
       </main>
     </div>
   );
