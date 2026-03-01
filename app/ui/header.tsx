@@ -15,7 +15,10 @@ export default function Header() {
           jade24.pl
         </Link>
 
-        <nav className="hidden sm:block" aria-label='Main navigation'>
+        <nav
+          className='hidden sm:block'
+          aria-label='Main navigation'
+        >
           <ul
             className='flex items-center gap-6'
             role='list'

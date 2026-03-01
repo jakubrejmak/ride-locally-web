@@ -32,8 +32,8 @@ export default function RootLayout({
       >
         <Header />
         {children}
-        <Footer />
         <MobileNavbar />
+        <Footer />
       </body>
     </html>
   );
