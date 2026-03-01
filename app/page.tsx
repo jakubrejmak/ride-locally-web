@@ -23,10 +23,10 @@ export default function Home() {
           <div className='absolute inset-0 bg-linear-to-t from-zinc-50 via-zinc-50/60 to-transparent dark:from-black dark:via-black/60 dark:to-transparent' />
           <div className='absolute inset-x-0 bottom-0 px-4 pb-4 sm:px-16'>
             <h1 className='text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50'>
-              Find a ride
+              Wyszukaj połączenie
             </h1>
             <p className='mt-2 text-zinc-600 dark:text-zinc-400'>
-              Search local transit schedules between two locations.
+              Szukaj połączeń oraz rozkładów jazdy lokalnych przewoźników
             </p>
           </div>
         </div>

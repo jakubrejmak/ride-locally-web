@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Honk } from "next/font/google";
 import { navLinks } from "@/app/ui/nav-items";
+import { MenuPopover } from "@/app/ui/menu-popover";
 
 const honk = Honk({ subsets: ["latin"] });
 
@@ -33,6 +34,9 @@ export default function Header() {
                 </Link>
               </li>
             ))}
+            <li>
+              <MenuPopover />
+            </li>
           </ul>
         </nav>
       </div>

@@ -35,13 +35,16 @@ export default function MenuDrawer({ children }: { children: ReactNode }) {
                 </Link>
               </li>
             ))}
-            <li className="w-full">
-              <ThemeSwitcher />
+            <li className='w-full'>
+              <ThemeSwitcher
+                label='Motyw'
+                themeLabels={["Jasny", "Ciemny", "System"]}
+              />
             </li>
           </ul>
           <DrawerFooter>
             <DrawerClose asChild>
-              <Button variant='outline'>Close</Button>
+              <Button variant='outline'>Zamknij</Button>
             </DrawerClose>
           </DrawerFooter>
         </div>

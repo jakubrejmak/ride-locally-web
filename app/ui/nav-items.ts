@@ -7,24 +7,24 @@ import {
 } from "lucide-react";
 
 export const navLinks = [
-  { label: "Home", href: "/", icon: Home },
-  { label: "Schedules", href: "/schedules", icon: Calendar },
+  { label: "Strona główna", href: "/", icon: Home },
+  { label: "Rozkłady", href: "/schedules", icon: Calendar },
   { label: "Blog", href: "/posts", icon: BookOpen },
-  { label: "About", href: "/about", icon: Info },
+  { label: "O nas", href: "/about", icon: Info },
 ];
 
 export const mobileNavLinks = [
-  { label: "Home", href: "/", icon: Home },
-  { label: "Schedules", href: "/schedules", icon: Calendar },
+  { label: "Start", href: "/", icon: Home },
+  { label: "Rozkłady", href: "/schedules", icon: Calendar },
   { label: "Blog", href: "/posts", icon: BookOpen },
 ];
 
 export const menuLinks = [
-  { label: "Log In", href: "/login", icon: UserRoundKey },
+  { label: "Zaloguj się", href: "/login", icon: UserRoundKey },
 ];
 
 export const footerLinks = [
-  { label: "Privacy Policy", href: "/privacy" },
-  { label: "Terms of Service", href: "/terms" },
-  { label: "Contact", href: "/contact" },
+  { label: "Polityka prywatności", href: "/privacy" },
+  { label: "Regulamin", href: "/terms" },
+  { label: "Kontakt", href: "/contact" },
 ];

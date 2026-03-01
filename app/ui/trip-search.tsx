@@ -10,15 +10,41 @@ export default function TripSearch() {
     <form action={searchTrips}>
       <div className='flex flex-col sm:flex-row gap-3 mt-7 mb-7'>
         <FieldGroup className='gap-4 flex-2'>
-          <LocationPicker name="from" label="Origin" placeholder="Pick origin" initialListVariation='originList' />
-          <LocationPicker name="to" label="Destination" placeholder="Pick destination" initialListVariation='destinationList' />
+          <LocationPicker
+            name='from'
+            label='Skąd'
+            placeholder='Wpisz punkt początkowy'
+            initialListVariation='originList'
+          />
+          <LocationPicker
+            name='to'
+            label='Dokąd'
+            placeholder='Wpisz cel podróży'
+            initialListVariation='destinationList'
+          />
         </FieldGroup>
         <FieldGroup className='gap-4 flex-1'>
-          <DatePicker />
-          <TimePicker />
+          <DatePicker
+            label='Data'
+            placeholder='Wybierz dzień'
+          />
+          <TimePicker
+            name='time'
+            label='Godzina'
+            placeholder='Wybierz godzinę'
+            modes={[
+              { value: "departure", label: "Odjazd", shortLabel: "Odj" },
+              { value: "arrival", label: "Przyjazd", shortLabel: "Przyj" },
+            ]}
+          />
         </FieldGroup>
       </div>
-      <Button type='submit'>Search</Button>
+      <Button
+        className='m-auto block'
+        type='submit'
+      >
+        Szukaj połączenia
+      </Button>
     </form>
   );
 }

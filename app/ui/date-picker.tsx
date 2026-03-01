@@ -10,15 +10,22 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { format } from "date-fns";
+import { useLocale } from "@/app/locale-context";
 import { ChevronDownIcon } from "lucide-react";
 
-export default function DatePicker() {
+interface DatePickerProps {
+  label: string;
+  placeholder: string;
+}
+
+export default function DatePicker({ label, placeholder }: DatePickerProps) {
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
 
   return (
     <Field>
-      <FieldLabel htmlFor='date-picker'>Date</FieldLabel>
+      <FieldLabel htmlFor='date-picker'>{label}</FieldLabel>
       <Popover
         open={open}
         onOpenChange={setOpen}
@@ -29,7 +36,7 @@ export default function DatePicker() {
             id='date-picker'
             className='w-32 justify-between font-normal'
           >
-            {date ? format(date, "PPP") : "Select date"}
+            {date ? format(date, "PPP", { locale }) : placeholder}
             <ChevronDownIcon />
           </Button>
         </PopoverTrigger>
@@ -39,6 +46,7 @@ export default function DatePicker() {
         >
           <Calendar
             mode='single'
+            locale={locale}
             selected={date}
             captionLayout='dropdown'
             defaultMonth={date}

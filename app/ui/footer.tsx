@@ -18,13 +18,13 @@ export default function Footer() {
         </nav>
 
         <p className="mt-6 text-xs text-zinc-500 dark:text-zinc-500">
-          All schedule data is provided for informational purposes only. We make
-          no guarantees regarding accuracy or completeness. Use at your own
-          discretion.
+          Dane rozkładowe mają charakter wyłącznie informacyjny. Nie
+          gwarantujemy ich dokładności ani kompletności. Korzystasz na własną
+          odpowiedzialność.
         </p>
 
         <p className="mt-2 text-xs text-zinc-400 dark:text-zinc-600">
-          &copy; {new Date().getFullYear()} jade24.pl. All rights reserved.
+          &copy; {new Date().getFullYear()} jade24.pl. Wszelkie prawa zastrzeżone.
         </p>
       </div>
     </footer>
