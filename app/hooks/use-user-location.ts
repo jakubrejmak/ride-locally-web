@@ -35,30 +35,3 @@ export function useUserLocation(): {
 
   return { location, loading, error, refresh };
 }
-
-export function useLocations<T>(
-  location: PointGeo | null,
-  fetchFn: (location: PointGeo) => Promise<T[]>,
-) {
-  const [data, setData] = useState<T[] | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    if (!location) return;
-    let ignore = false;
-    fetchFn(location)
-      .then((result) => {
-        if (!ignore) setData(result);
-      })
-      .catch((err) => {
-        if (!ignore) setError(err instanceof Error ? err : new Error(err));
-      });
-    return () => {
-      ignore = true;
-    };
-  }, [location, fetchFn]);
-
-  const loading = !!location && !data && !error;
-
-  return { data, loading, error };
-}

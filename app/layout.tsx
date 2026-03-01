@@ -1,43 +1,40 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Honk } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "./ui/header";
 import Footer from "./ui/footer";
+import MobileNavbar from "./ui/mobile-navbar";
 
 const geistSans = Geist({
-    variable: "--font-geist-sans",
-    subsets: ["latin"],
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
-    subsets: ["latin"],
-});
-
-const honk = Honk({
-    variable: "--font-honk",
-    subsets: ["latin"],
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-    title: "Rozkładzik",
-    description: "Zawsze najbardziej aktualne dane o lokalnych przejazdach!",
+  title: "jade24.pl",
+  description: "Zawsze najbardziej aktualne dane o lokalnych przejazdach!",
 };
 
 export default function RootLayout({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    return (
-        <html lang="en">
-            <body
-                className={`${geistSans.variable} ${geistMono.variable} ${honk.variable} antialiased`}
-            >
-                <Header />
-                {children}
-                <Footer />
-            </body>
-        </html>
-    );
+  return (
+    <html lang='en'>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <Header />
+        {children}
+        <Footer />
+        <MobileNavbar />
+      </body>
+    </html>
+  );
 }

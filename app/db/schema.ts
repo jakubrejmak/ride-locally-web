@@ -105,7 +105,7 @@ export const fareAttributesTable = pgTable("fare_attributes", {
 export const stopsTable = pgTable("stops", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: varchar().notNull(),
-  location: geographyPoint("location").notNull(),
+  coordinates: geographyPoint("coordinates").notNull(),
 });
 
 export const tripStopsTable = pgTable("trip_stops", {
@@ -144,7 +144,7 @@ export const addressesTable = pgTable("addresses", {
   city: varchar({ length: 100 }),
   postcode: varchar({ length: 20 }),
   country: varchar({ length: 2 }),
-  location: geographyPoint("location").notNull(),
+  coordinates: geographyPoint("coordinates").notNull(),
 });
 
 export const addressesRawTable = pgTable("addresses_raw", {

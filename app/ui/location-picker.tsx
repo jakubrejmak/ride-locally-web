@@ -1,135 +1,154 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Combobox,
   ComboboxContent,
-  ComboboxGroup,
   ComboboxInput,
   ComboboxItem,
-  ComboboxLabel,
   ComboboxList,
 } from "@/components/ui/combobox";
 import { Field, FieldLabel } from "@/components/ui/field";
-import { LocationOption } from "@/app/lib/locations";
-import { useUserLocation, useLocations } from "@/app/hooks/use-locations";
+import { useUserLocation } from "@/app/hooks/use-user-location";
+import { useAsyncData } from "@/app/hooks/use-async-data";
 import {
-  getStopsCloseby,
+  getStopsNearby,
   getStopsPopular,
-  getLocationsCloseby,
-  getLocationsPopular,
+  getAddressesNearby,
+  getAddressesPopular,
+  searchStops,
+  searchAddresses,
 } from "@/app/data/queries";
 import { InferSelectModel } from "drizzle-orm";
 import { stopsTable, addressesTable } from "@/app/db/schema";
+import { PointGeo } from "../lib/locations";
 
 type Stop = InferSelectModel<typeof stopsTable>;
 type Address = InferSelectModel<typeof addressesTable>;
 
-type LocationGroup = {
+type LocationPickerProps = {
+  name: string;
   label: string;
-  items: LocationOption[];
+  placeholder: string;
+  initialListVariation: "originList" | "destinationList";
 };
 
-type Variant = "origin" | "destination";
-
-const variantConfig: Record<
-  Variant,
-  {
-    label: string;
-    placeholder: string;
-    stopsFn: typeof getStopsCloseby;
-    stopsLabel: string;
-    addressesFn: typeof getLocationsCloseby;
-    addressesLabel: string;
-  }
-> = {
-  origin: {
-    label: "Origin",
-    placeholder: "Pick origin",
-    stopsFn: getStopsCloseby,
-    stopsLabel: "Nearby stops",
-    addressesFn: getLocationsCloseby,
-    addressesLabel: "Nearby addresses",
-  },
-  destination: {
-    label: "Destination",
-    placeholder: "Pick destination",
-    stopsFn: getStopsPopular,
-    stopsLabel: "Popular stops nearby",
-    addressesFn: getLocationsPopular,
-    addressesLabel: "Popular addresses nearby",
-  },
+type LocationOption = {
+  kind: "stop" | "address" | "other";
+  id: string;
+  label: string;
+  lat?: number;
+  lng?: number;
 };
 
-function toStopGroup(label: string, data: Stop[] | null): LocationGroup {
-  return {
-    label,
-    items: (data ?? []).map((s) => ({
+function toLocationOptions(
+  stops: Stop[] | null,
+  addresses: Address[] | null,
+): LocationOption[] {
+  return [
+    ...(stops ?? []).map((s) => ({
       kind: "stop" as const,
       id: `stop:${s.id}`,
       label: s.name,
     })),
-  };
-}
-
-function toAddressGroup(label: string, data: Address[] | null): LocationGroup {
-  return {
-    label,
-    items: (data ?? []).map((a) => ({
+    ...(addresses ?? []).map((a) => ({
       kind: "address" as const,
-      id: `address:${a.id}`,
+      id: `addr:${a.id}`,
       label: a.display_name,
     })),
-  };
+  ];
 }
 
-export default function LocationPicker({ variant }: { variant: Variant }) {
-  const [value, setValue] = useState<LocationOption | null>(null);
-  const config = variantConfig[variant];
+const listConfig = {
+  originList: {
+    fetchStops: getStopsNearby,
+    fetchAddresses: getAddressesNearby,
+  },
+  destinationList: {
+    fetchStops: getStopsPopular,
+    fetchAddresses: getAddressesPopular,
+  },
+} as const;
 
-  const { location: userLoc } = useUserLocation();
-  const { data: stops } = useLocations(userLoc, config.stopsFn);
-  const { data: addresses } = useLocations(userLoc, config.addressesFn);
+export default function LocationPicker({
+  name,
+  label,
+  placeholder,
+  initialListVariation,
+}: LocationPickerProps) {
+  // get current user location
+  const { location: currentUserLocation } = useUserLocation();
 
-  const groups = [
-    toStopGroup(config.stopsLabel, stops),
-    toAddressGroup(config.addressesLabel, addresses),
-  ];
-  const allItems = groups.flatMap((g) => g.items);
+  // build initial options to show when user didnt type anything yet
+  const { fetchStops, fetchAddresses } = listConfig[initialListVariation];
+  const { data: initialStops } = useAsyncData<PointGeo, Stop>(
+    currentUserLocation,
+    fetchStops,
+  );
+  const { data: initialAddresses } = useAsyncData<PointGeo, Address>(
+    currentUserLocation,
+    fetchAddresses,
+  );
+  const initialList = toLocationOptions(initialStops, initialAddresses);
+
+  // store the user input and query the DB with it to get the list
+  const [userInput, setUserInput] = useState("");
+  const { data: queriedStops } = useAsyncData<string, Stop>(
+    userInput || null,
+    searchStops,
+  );
+  const { data: queriedAddresses } = useAsyncData<string, Address>(
+    userInput || null,
+    searchAddresses,
+  );
+  const resultList = toLocationOptions(queriedStops, queriedAddresses);
+  if (userInput.trim()) {
+    const userInputOption: LocationOption = {
+      kind: "other" as const,
+      id: `othr:${userInput.trim()}`,
+      label: userInput.trim(),
+    };
+    resultList.push(userInputOption);
+  }
+
+  // choose which list to display based on presence of user input
+  const allItems = userInput.trim() ? resultList : initialList;
+
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  function debounceUserInput(value: string, delayMs: number = 300) {
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
+    timer.current = setTimeout(() => {
+      setUserInput(value);
+    }, delayMs)
+  }
 
   return (
     <Field>
-      <FieldLabel htmlFor={variant}>{config.label}</FieldLabel>
+      <FieldLabel htmlFor={name}>{label}</FieldLabel>
       <Combobox
-        value={value}
-        onValueChange={setValue}
+        name={name}
+        autoHighlight={"always" as unknown as boolean}
         items={allItems}
-        itemToStringValue={(item: LocationOption) => item.label}
+        itemToStringLabel={(item: LocationOption) => item.label}
+        itemToStringValue={(item: LocationOption) => item.id}
+        onInputValueChange={(val) => debounceUserInput(val)}
       >
-        <input
-          type='hidden'
-          name={variant}
-          value={value?.id ?? ""}
-        />
         <ComboboxInput
-          id={variant}
-          placeholder={config.placeholder}
+          id={name}
+          placeholder={placeholder}
         />
         <ComboboxContent>
           <ComboboxList>
-            {groups.map((group) => (
-              <ComboboxGroup key={group.label}>
-                <ComboboxLabel>{group.label}</ComboboxLabel>
-                {group.items.map((item) => (
-                  <ComboboxItem
-                    key={item.id}
-                    value={item}
-                  >
-                    {item.label}
-                  </ComboboxItem>
-                ))}
-              </ComboboxGroup>
-            ))}
+            {(list) => (
+              <ComboboxItem
+                key={list.id}
+                value={list}
+              >
+                {list.label}
+              </ComboboxItem>
+            )}
           </ComboboxList>
         </ComboboxContent>
       </Combobox>

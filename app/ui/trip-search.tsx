@@ -8,10 +8,10 @@ import { FieldGroup } from "@/components/ui/field";
 export default function TripSearch() {
   return (
     <form action={searchTrips}>
-      <div className='flex gap-3 mt-7 mb-7'>
+      <div className='flex flex-col sm:flex-row gap-3 mt-7 mb-7'>
         <FieldGroup className='gap-4 flex-2'>
-          <LocationPicker variant='origin' />
-          <LocationPicker variant='destination' />
+          <LocationPicker name="from" label="Origin" placeholder="Pick origin" initialListVariation='originList' />
+          <LocationPicker name="to" label="Destination" placeholder="Pick destination" initialListVariation='destinationList' />
         </FieldGroup>
         <FieldGroup className='gap-4 flex-1'>
           <DatePicker />

@@ -1,15 +1,3 @@
-type BaseLocation = {
-  id: string;
-  label: string;
-  lat?: number;
-  lng?: number;
-};
-
-export type StopLocation = BaseLocation & { kind: "stop" };
-export type AddressLocation = BaseLocation & { kind: "address" };
-
-export type LocationOption = StopLocation | AddressLocation;
-
 export type PointGeo = {
   latitude: number;
   longitude: number;
