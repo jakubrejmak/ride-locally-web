@@ -6,6 +6,7 @@ import {
   DrawerClose,
   DrawerContent,
   DrawerFooter,
+  DrawerDescription,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
@@ -21,6 +22,7 @@ export default function MenuDrawer({ children }: { children: ReactNode }) {
       <DrawerContent>
         <div className='mx-auto w-full max-w-sm'>
           <DrawerTitle className='text-center pt-2'>Menu</DrawerTitle>
+          <DrawerDescription className='sr-only'>Menu nawigacji</DrawerDescription>
           <ul
             className='p-4 flex flex-col items-center gap-3'
             role='list'

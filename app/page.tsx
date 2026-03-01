@@ -11,6 +11,7 @@ export default function Home() {
             alt='City intersection'
             fill
             priority
+            sizes='(max-width: 768px) 100vw, 768px'
             className='object-cover dark:hidden'
           />
           <Image
@@ -18,6 +19,7 @@ export default function Home() {
             alt='City intersection at night'
             fill
             priority
+            sizes='(max-width: 768px) 100vw, 768px'
             className='hidden object-cover dark:block'
           />
           <div className='absolute inset-0 bg-linear-to-t from-zinc-50 via-zinc-50/60 to-transparent dark:from-black dark:via-black/60 dark:to-transparent' />
