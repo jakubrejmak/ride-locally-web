@@ -17,7 +17,7 @@ export default function MobileNavbar() {
               href={item.href}
               className='flex flex-col items-center gap-1 transition-transform duration-150 active:scale-110 active:-translate-y-1'
             >
-              <item.icon size={20} />
+              <item.icon size={25} />
               <span className='text-[10px]'>{item.label}</span>
             </Link>
           </li>
@@ -25,7 +25,7 @@ export default function MobileNavbar() {
         <li>
           <MenuDrawer>
             <button className='flex flex-col items-center gap-1 transition-transform duration-150 active:scale-110 active:-translate-y-1'>
-              <Menu size={20} />
+              <Menu size={25} />
               <span className='text-[10px]'>Menu</span>
             </button>
           </MenuDrawer>

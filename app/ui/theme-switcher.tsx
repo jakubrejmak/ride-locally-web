@@ -27,7 +27,7 @@ export function ThemeSwitcher({ label, themeLabels }: ThemeSwitcherProps) {
         value='theme'
         className='border-b-0'
       >
-        <AccordionTrigger className='cursor-pointer gap-1 justify-center py-0 text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 hover:no-underline dark:text-zinc-400 dark:hover:text-zinc-50'>
+        <AccordionTrigger className='text-base cursor-pointer items-center gap-1 justify-center py-0 font-medium text-zinc-600 transition-colors hover:text-zinc-900 hover:no-underline dark:text-zinc-400 dark:hover:text-zinc-50'>
           {label}
         </AccordionTrigger>
         <AccordionContent className='pb-0 pt-2'>
@@ -36,7 +36,7 @@ export function ThemeSwitcher({ label, themeLabels }: ThemeSwitcherProps) {
               <button
                 key={t}
                 onClick={() => setTheme(t)}
-                className={`w-full rounded-md py-1.5 text-sm transition-colors ${
+                className={`w-full rounded-md py-1.5 transition-colors ${
                   theme === t
                     ? "bg-zinc-100 font-medium text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50"
                     : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"

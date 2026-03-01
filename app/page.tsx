@@ -3,7 +3,7 @@ import TripSearch from "@/app/ui/trip-search";
 
 export default function Home() {
   return (
-    <div className='flex min-h-screen flex-col items-center bg-zinc-50 font-sans dark:bg-black'>
+    <div className='flex flex-col items-center bg-zinc-50 font-sans dark:bg-black'>
       <div className='relative w-full max-w-3xl'>
         <div className='relative h-48 w-full overflow-hidden sm:h-64'>
           <Image
@@ -33,7 +33,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <main className='w-full max-w-3xl px-4 sm:px-16'>
+      <main className='mb-8 w-full max-w-3xl px-4 sm:px-16'>
         <TripSearch />
       </main>
     </div>

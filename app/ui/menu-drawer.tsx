@@ -31,7 +31,7 @@ export default function MenuDrawer({ children }: { children: ReactNode }) {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className='text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50'
+                  className='text-base font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50'
                 >
                   {item.label}
                 </Link>
