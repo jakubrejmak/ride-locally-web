@@ -175,7 +175,7 @@ export const addressesMetricsTable = pgTable("addresses_metrics", {
 // scraper tables
 export const scrapeStatusEnum = pgEnum("scrape_status", ["pending", "running", "success", "failed"]);
 
-export const scrTargetsTable = pgTable("scr_targets", {
+export const ttScrTargetsTable = pgTable("tt_scr_targets", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: varchar({ length: 255 }).notNull(),
   url: varchar().notNull(),
@@ -187,22 +187,22 @@ export const scrTargetsTable = pgTable("scr_targets", {
   updated_at: timestamp().notNull().defaultNow().$onUpdate(() => new Date()),
 });
 
-export const scrRunsTable = pgTable("scr_runs", {
+export const ttScrRunsTable = pgTable("tt_scr_runs", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  target_id: integer().notNull().references(() => scrTargetsTable.id, { onDelete: "cascade" }),
+  target_id: integer().notNull().references(() => ttScrTargetsTable.id, { onDelete: "cascade" }),
   status: scrapeStatusEnum("status").notNull().default("pending"),
-  filepath: varchar(),
+  o_filepath: varchar(),
   error_message: varchar(),
   started_at: timestamp(),
   finished_at: timestamp(),
   created_at: timestamp().notNull().defaultNow(),
 });
 
-export const scrProcessedTable = pgTable("scr_processed", {
+export const ttScrProcessedTable = pgTable("tt_scr_processed", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  run_id: integer().notNull().references(() => scrRunsTable.id, { onDelete: "cascade" }),
-  target_id: integer().notNull().references(() => scrTargetsTable.id, { onDelete: "cascade" }),
-  output_filepath: varchar().notNull(),
+  run_id: integer().notNull().references(() => ttScrRunsTable.id, { onDelete: "cascade" }),
+  target_id: integer().notNull().references(() => ttScrTargetsTable.id, { onDelete: "cascade" }),
+  o_filepath: varchar().notNull(),
   version: integer().notNull().default(1),
   created_at: timestamp().notNull().defaultNow(),
 });
