@@ -1,3 +1,6 @@
+// Mirror of the database schema, which Alembic owns (scraper/alembic). Don't edit
+// by hand: after a migration, run `npx drizzle-kit pull` and replace this file
+// with the generated drizzle/schema.ts.
 import {
   boolean,
   date,
